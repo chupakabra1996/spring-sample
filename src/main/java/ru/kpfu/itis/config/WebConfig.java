@@ -24,8 +24,11 @@ public class WebConfig extends WebMvcConfigurerAdapter { //extending it to custo
 
     @Bean
     public FreeMarkerConfigurer freeMarkerConfigurer() {
+
         FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
+
         configurer.setTemplateLoaderPath("/WEB-INF/freemarker/");
+
         configurer.setDefaultEncoding("UTF-8");
 
         return configurer;
@@ -33,11 +36,17 @@ public class WebConfig extends WebMvcConfigurerAdapter { //extending it to custo
 
     @Bean
     public ViewResolver viewResolver() {
+
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+
         resolver.setCache(true);
+
         resolver.setPrefix("");
+
         resolver.setSuffix(".ftl");
+
         resolver.setContentType("text/html; charset=UTF-8");
+
         return resolver;
     }
 
