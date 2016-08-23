@@ -20,7 +20,9 @@ import java.util.Properties;
 @Configuration
 @EnableJpaRepositories(basePackages = {"ru.kpfu.itis.repository"}) //scan jpa repos
 @EnableTransactionManagement
-@PropertySource(value = "classpath:/database/database.properties") //inject it to spring's Environment
+@PropertySource(
+        value = {"classpath:/database/database.properties", "classpath:/database/hibernate.properties"}
+) //inject it to spring's Environment
 
 public class DatabaseConfig {
 
