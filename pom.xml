@@ -35,7 +35,7 @@
         <hibernate.version>5.2.2.Final</hibernate.version>
 
         <!--postgres-->
-        <postgres.version>9.4.1208.jre7</postgres.version>
+        <mysql.version>5.1.38</mysql.version>
 
         <!--dbcp2 connection pool-->
         <dbcp2.version>2.1.1</dbcp2.version>
@@ -149,10 +149,11 @@
 
         <!--Postgres-->
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgres.version}</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
+
 
         <!--Connection pool-->
         <dependency>
