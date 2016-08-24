@@ -17,8 +17,9 @@ public class LoginController {
 
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage() {
-        return "login";
+    public String loginPage(Principal principal) {
+        if (principal == null) return "login";
+        return "redirect:/homepage";
     }
 
     @RequestMapping(value = {"/", "/homepage"}, method = RequestMethod.GET)
@@ -28,6 +29,5 @@ public class LoginController {
 
         return "index";
     }
-
 
 }
