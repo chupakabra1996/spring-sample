@@ -57,7 +57,6 @@ public class RegistrationController {
             @ModelAttribute("user") @Valid UserFrom user,
             BindingResult result
     ) {
-
         if (!result.hasErrors()) {
             registerNewUserAccount(user, result);
         }
@@ -67,7 +66,10 @@ public class RegistrationController {
         }
 
         redirectAttributes.addFlashAttribute("successRegister", "User " + user.getEmail() + " was successfully registered!");
-        return "redirect:" + MvcUriComponentsBuilder.fromMappingName("LC#showLoginPage").build();
+
+        String redirectUrl = MvcUriComponentsBuilder.fromMappingName("LC#showLoginPage").build();
+
+        return "redirect:" + redirectUrl.substring(0, redirectUrl.lastIndexOf('/'));
     }
 
 
