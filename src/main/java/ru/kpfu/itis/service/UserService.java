@@ -39,9 +39,7 @@ public class UserService {
     public User register(@NotNull UserFrom userFrom) throws UserRegistrationException {
 
         if (isEmailExists(userFrom.getEmail())) {
-            //TODO local resolver and i18n
-            throw new UserRegistrationException("Warning: E-Mail Address is already registered!" +
-                    " Please login at the login page.");
+            throw new UserRegistrationException("Email already exists");
         }
 
         User user = new User();
