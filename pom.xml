@@ -25,47 +25,66 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!--Java Web-->
-        <java.web-api.version>7.0</java.web-api.version>
-        <java.servlet-api.version>3.1.0</java.servlet-api.version>
-
-        <!--freemarker template-->
-        <freemarker.version>2.3.23</freemarker.version>
+        <javax.web-api.version>7.0</javax.web-api.version>
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 
         <!--java standard tag library -->
-        <java.jstl.version>1.2</java.jstl.version>
+        <javax.jstl.version>1.2</javax.jstl.version>
 
         <!--hibernate-->
         <hibernate.version>5.2.2.Final</hibernate.version>
 
         <!--postgres-->
-        <postgres.version>9.4.1208.jre7</postgres.version>
+        <mysql.version>5.1.38</mysql.version>
 
         <!--dbcp2 connection pool-->
         <dbcp2.version>2.1.1</dbcp2.version>
 
+        <!--Spring security-->
+        <spring-security.version>4.1.2.RELEASE</spring-security.version>
+
+        <!--logging-->
+        <log4j.version>1.7.21</log4j.version>
+
+        <!--jsp-->
+        <jsp-api.version>2.0</jsp-api.version>
+
+        <!--validator-->
+        <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
+        <javax.validator.version>1.1.0.Final</javax.validator.version>
 
     </properties>
 
     <dependencies>
 
-        <!--template-->
+        <!--jsp-api-->
         <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>${freemarker.version}</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>${jsp-api.version}</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!--web-->
+
+
+        <!--Java EE-->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
-            <version>${java.web-api.version}</version>
+            <version>${javax.web-api.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>${java.jstl.version}</version>
+            <version>${javax.jstl.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet-api.version}</version>
         </dependency>
 
         <!--Spring-->
@@ -102,6 +121,7 @@
         </dependency>
 
 
+        <!--Spring data-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
@@ -118,6 +138,10 @@
             <artifactId>spring-tx</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
 
         <!--hibernate-->
         <dependency>
@@ -127,12 +151,38 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml</groupId>
+                    <artifactId>classmate</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--javax validation-->
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${javax.validator.version}</version>
+        </dependency>
+
+
         <!--Postgres-->
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgres.version}</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
+
 
         <!--Connection pool-->
         <dependency>
@@ -141,7 +191,39 @@
             <version>${dbcp2.version}</version>
         </dependency>
 
+        <!--Spring Security-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+        </dependency>
+
+        <!--logging log4j-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+
+
     </dependencies>
+
+
 
 
     <dependencyManagement>
@@ -151,6 +233,20 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>${spring.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-bom</artifactId>
+                <version>${spring-security.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -1,6 +1,7 @@
-package ru.kpfu.itis.config;
+package ru.kpfu.itis.config.web;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import ru.kpfu.itis.config.RootConfig;
 
 //instead of web.xml
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
