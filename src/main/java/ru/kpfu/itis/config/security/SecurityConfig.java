@@ -1,4 +1,4 @@
-package ru.kpfu.itis.config;
+package ru.kpfu.itis.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,20 +9,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.kpfu.itis.service.UserDetailsServiceImpl;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("user").password("user").roles("USER")
-            .and()
-            .withUser("admin").password("admin").roles("ADMIN");
-    }
+
 
     /**
      * Login form based config
@@ -31,26 +27,36 @@ public class SecurityConfig {
     @Order(2)
     public static class FormLoginWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+        @Autowired
+        public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+        }
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
-                .antMatchers("/", "/signup").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                    .antMatchers("/", "/signup").permitAll()
+                    .antMatchers("/admin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/homepage")
-                .permitAll()
+                    .formLogin()
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/home")
+                    .permitAll()
                 .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
-                .permitAll().
-                and()
-                .rememberMe()
-                .tokenValiditySeconds(60*60*24);
+                    .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login?logout")
+                .and()
+                    .rememberMe()
+                    .tokenValiditySeconds(86400)
+                 .and()
+                    .csrf()
+                 .and()
+                    .exceptionHandling()
+                    .accessDeniedPage("/access_denied");
+
         }
 
 
@@ -59,11 +65,10 @@ public class SecurityConfig {
             return new BCryptPasswordEncoder();
         }
 
-//        @Bean
-//        public UserDetailsService userDetailsService() {
-//            //TODO
-//            return null;
-//        }
+        @Bean
+        public UserDetailsService userDetailsService() {
+            return new UserDetailsServiceImpl();
+        }
     }
 
 

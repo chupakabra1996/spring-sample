@@ -10,23 +10,7 @@
     <title>Welcome</title>
 </head>
 <body>
-<p>Welcome, ${user}</p>
-
-<c:choose>
-
-    <c:when test="${user.equals('Guest')}">
-        <c:url value="/login" var="loginUrl"/>
-        <p>Please, log in <a href="${loginUrl}">here</a></p>
-
-    </c:when>
-
-    <c:otherwise>
-        <c:url value="/logout" var="logoutUrl"/>
-        <form:form action="${logoutUrl}" method="post">
-            <button type="submit">log out</button>
-        </form:form>
-    </c:otherwise>
-</c:choose>
+   <p>You are welcome</p>
 
 </body>
 </html>

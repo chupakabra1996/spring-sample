@@ -1,33 +1,24 @@
 package ru.kpfu.itis.controller;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.security.Principal;
 
 @Controller
+@RequestMapping("/login")
 public class LoginController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage(Principal principal) {
+    @RequestMapping(method = RequestMethod.GET)
+    public String showLoginPage(Principal principal) {
         if (principal == null) return "login";
-        return "redirect:/homepage";
+        return "redirect:" + MvcUriComponentsBuilder.fromMappingName("HC#showHomePage").build();
     }
 
-    @RequestMapping(value = {"/", "/homepage"}, method = RequestMethod.GET)
-    public String showWelcome(Principal principal, ModelMap model) {
-        if (principal != null) model.addAttribute("user", principal.getName());
-        else model.addAttribute("user", "Guest");
 
-        return "index";
-    }
+
 
 }

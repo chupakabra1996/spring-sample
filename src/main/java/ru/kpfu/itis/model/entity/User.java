@@ -30,12 +30,8 @@ public class User implements CredentialsContainer, UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Transient
-    private String passwordRepeat;
-
 
     //account info
-
     @Column(nullable = false)
     private boolean isEnabled;
 
@@ -43,7 +39,8 @@ public class User implements CredentialsContainer, UserDetails {
     private boolean isAccountNonLocked;
 
 
-    public User() {}
+    public User() {
+    }
 
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
@@ -53,7 +50,7 @@ public class User implements CredentialsContainer, UserDetails {
     }
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user"),
@@ -62,6 +59,10 @@ public class User implements CredentialsContainer, UserDetails {
     private Set<UserAuthority> authorities = new HashSet<>();
 
     //methods
+
+    public void addRole(UserAuthority role) {
+        authorities.add(role);
+    }
 
     public long getId() {
         return id;
@@ -79,14 +80,25 @@ public class User implements CredentialsContainer, UserDetails {
         return email;
     }
 
-    public String getPasswordRepeat() {
-        return passwordRepeat;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     @PrePersist
     private void setUpAccount() {
-        isEnabled = false;
+        isEnabled = true;
         isAccountNonLocked = true;
     }
 
@@ -103,7 +115,6 @@ public class User implements CredentialsContainer, UserDetails {
     @Override
     public void eraseCredentials() {
         password = null;
-        passwordRepeat = null;
     }
 
     @Override
@@ -128,7 +139,7 @@ public class User implements CredentialsContainer, UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
