@@ -22,11 +22,13 @@
     <form:form name="f" action="${loginUrl}" method="post">
         <fieldset>
             <legend>Please Login</legend>
+
             <c:if test="${param.error != null}">
                 <div class="alert alert-error">
                     Invalid username and password.
                 </div>
             </c:if>
+
             <c:if test="${param.logout != null}">
                 <div class="alert alert-success">
                     You have been logged out.
