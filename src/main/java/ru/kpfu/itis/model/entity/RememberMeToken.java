@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "persistent_login")
-public class PersistentLogin {
+@Table(name = "login_tokens")
+public class RememberMeToken {
 
     @Id
     private String series;
@@ -62,7 +62,7 @@ public class PersistentLogin {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PersistentLogin that = (PersistentLogin) o;
+        RememberMeToken that = (RememberMeToken) o;
 
         if (!series.equals(that.series)) return false;
         if (!username.equals(that.username)) return false;

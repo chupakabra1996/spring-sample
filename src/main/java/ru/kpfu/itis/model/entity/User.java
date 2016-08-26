@@ -96,9 +96,13 @@ public class User implements CredentialsContainer, UserDetails {
         this.email = email;
     }
 
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
     @PrePersist
     private void setUpAccount() {
-        isEnabled = true;
+        isEnabled = false;
         isAccountNonLocked = true;
     }
 

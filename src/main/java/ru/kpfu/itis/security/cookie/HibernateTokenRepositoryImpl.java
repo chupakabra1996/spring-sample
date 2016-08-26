@@ -7,8 +7,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kpfu.itis.model.entity.PersistentLogin;
-import ru.kpfu.itis.repository.PersistentLoginRepository;
+import ru.kpfu.itis.model.entity.RememberMeToken;
+import ru.kpfu.itis.repository.LoginTokensRepository;
 
 import java.util.Date;
 
@@ -19,49 +19,49 @@ public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
     private static final Logger logger = LoggerFactory.getLogger(HibernateTokenRepositoryImpl.class);
 
     @Autowired
-    private PersistentLoginRepository persistentLoginRepository;
+    private LoginTokensRepository loginTokensRepository;
 
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
 
-        PersistentLogin persistentLogin = new PersistentLogin();
+        RememberMeToken rememberMeToken = new RememberMeToken();
 
-        persistentLogin.setUsername(token.getUsername());
-        persistentLogin.setSeries(token.getSeries());
-        persistentLogin.setToken(token.getTokenValue());
-        persistentLogin.setLast_used(token.getDate());
+        rememberMeToken.setUsername(token.getUsername());
+        rememberMeToken.setSeries(token.getSeries());
+        rememberMeToken.setToken(token.getTokenValue());
+        rememberMeToken.setLast_used(token.getDate());
 
-        persistentLoginRepository.save(persistentLogin);
+        loginTokensRepository.save(rememberMeToken);
     }
 
     @Override
     public PersistentRememberMeToken getTokenForSeries(String series) {
 
-        PersistentLogin persistentLogin = persistentLoginRepository.findBySeries(series);
+        RememberMeToken rememberMeToken = loginTokensRepository.findBySeries(series);
 
-        if (persistentLogin == null) return null;
+        if (rememberMeToken == null) return null;
 
-        return new PersistentRememberMeToken(persistentLogin.getUsername(),
-                persistentLogin.getSeries(), persistentLogin.getToken(), persistentLogin.getLast_used());
+        return new PersistentRememberMeToken(rememberMeToken.getUsername(),
+                rememberMeToken.getSeries(), rememberMeToken.getToken(), rememberMeToken.getLast_used());
     }
 
     @Override
     public void removeUserTokens(String username) {
 
-        PersistentLogin persistentLogin = persistentLoginRepository.findByUsername(username);
+        RememberMeToken rememberMeToken = loginTokensRepository.findByUsername(username);
 
-        if (persistentLogin != null) persistentLoginRepository.delete(persistentLogin);
+        if (rememberMeToken != null) loginTokensRepository.delete(rememberMeToken);
     }
 
     @Override
     public void updateToken(String seriesId, String tokenValue, Date lastUsed) {
 
-        PersistentLogin persistentLogin = persistentLoginRepository.findBySeries(seriesId);
+        RememberMeToken rememberMeToken = loginTokensRepository.findBySeries(seriesId);
 
-        persistentLogin.setToken(tokenValue);
-        persistentLogin.setLast_used(lastUsed);
+        rememberMeToken.setToken(tokenValue);
+        rememberMeToken.setLast_used(lastUsed);
 
-        persistentLoginRepository.save(persistentLogin);
+        loginTokensRepository.save(rememberMeToken);
     }
 
 }
