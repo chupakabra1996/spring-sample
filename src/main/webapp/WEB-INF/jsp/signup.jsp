@@ -14,6 +14,14 @@
 <body>
 <p>Registration form</p>
 
+<c:if test="${exception != null}">
+    <p>${exception}</p>
+</c:if>
+
+<c:if test="${message!= null}">
+    <p>${message}</p>
+</c:if>
+
 <form:form modelAttribute="user" method="POST" acceptCharset="utf8">
     <table>
         <tr>

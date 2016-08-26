@@ -13,8 +13,8 @@
 </head>
 <body>
 
-    <c:if test="${successRegister != null}">
-        You're registered now
+    <c:if test="${message != null}">
+        ${message}
     </c:if>
 
     <c:url value="/login" var="loginUrl"/>
