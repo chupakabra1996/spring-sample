@@ -110,7 +110,7 @@ public class RegistrationController {
             return "signup";
         }
 
-        userService.register(user, request);
+        userService.register(user, request.getContextPath());
 
         return "redirect:/user/signup/confirm/next?status=waiting_for_confirmation";
     }

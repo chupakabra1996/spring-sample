@@ -7,7 +7,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.WebRequest;
 import ru.kpfu.itis.exception.EmailExistsException;
 import ru.kpfu.itis.exception.UserRegistrationException;
 import ru.kpfu.itis.model.entity.RegisterVerificationToken;
@@ -42,9 +41,8 @@ public class UserService {
     private ApplicationEventPublisher applicationEventPublisher;
 
     public User register(
-            @NotNull UserFrom userFrom,
-            WebRequest request
-
+        @NotNull UserFrom userFrom,
+        String context
     ) throws UserRegistrationException {
 
         logger.error("[Try to register the user ...]");
@@ -62,7 +60,7 @@ public class UserService {
         );
 
         //publish onRegistration event
-        publishOnRegistrationEvent(user, request);
+        publishOnRegistrationEvent(user, context);
 
         //add user's role (default ROLE_USER)
         UserAuthority role = userAuthorityRepository.findByRole("ROLE_USER");
@@ -107,11 +105,11 @@ public class UserService {
     }
 
 
-    private void publishOnRegistrationEvent(User user, WebRequest request) {
+    private void publishOnRegistrationEvent(User user, String context) {
 
         logger.error("[Publishing onRegistration event ...]");
 
-        ApplicationEvent event = new OnRegistrationCompleteEvent(user, request);
+        ApplicationEvent event = new OnRegistrationCompleteEvent(user, context);
 
         applicationEventPublisher.publishEvent(event);
     }

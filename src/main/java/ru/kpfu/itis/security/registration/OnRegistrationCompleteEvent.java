@@ -1,7 +1,6 @@
 package ru.kpfu.itis.security.registration;
 
 import org.springframework.context.ApplicationEvent;
-import org.springframework.web.context.request.WebRequest;
 import ru.kpfu.itis.model.entity.User;
 
 /**
@@ -9,18 +8,18 @@ import ru.kpfu.itis.model.entity.User;
  */
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
 
-    private WebRequest request;
+    private String context;
 
-    public OnRegistrationCompleteEvent(User user, WebRequest request) {
+    public OnRegistrationCompleteEvent(User user, String context) {
         super(user); //user is a source
-        this.request = request;
+        this.context = context;
     }
 
-    public WebRequest getRequest() {
-        return request;
+    public String getContext() {
+        return context;
     }
 
-    public void setRequest(WebRequest request) {
-        this.request = request;
+    public void setContext(String context) {
+        this.context = context;
     }
 }

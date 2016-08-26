@@ -49,7 +49,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         userService.saveVerificationToken(user, token);
 
-        String confirmUrl = event.getRequest().getContextPath() + "/user/signup/confirm?token=" + token;
+        String confirmUrl = event.getContext() + "/user/signup/confirm?token=" + token;
 
         logger.error("[Confirmation url - `" + confirmUrl + "`]");
 
