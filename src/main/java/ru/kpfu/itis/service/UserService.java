@@ -3,8 +3,12 @@ package ru.kpfu.itis.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.WebRequest;
+import ru.kpfu.itis.exception.EmailExistsException;
 import ru.kpfu.itis.exception.UserRegistrationException;
 import ru.kpfu.itis.model.entity.RegisterVerificationToken;
 import ru.kpfu.itis.model.entity.User;
@@ -13,6 +17,7 @@ import ru.kpfu.itis.model.form.UserFrom;
 import ru.kpfu.itis.repository.RegisterTokensRepository;
 import ru.kpfu.itis.repository.UserAuthorityRepository;
 import ru.kpfu.itis.repository.UserRepository;
+import ru.kpfu.itis.security.registration.OnRegistrationCompleteEvent;
 
 import javax.validation.constraints.NotNull;
 
@@ -33,60 +38,82 @@ public class UserService {
     @Autowired
     private RegisterTokensRepository registerTokenRepository;
 
-    /**
-     * Register user account
-     *
-     * @param userFrom - registering user data transfer object
-     * @return registered user
-     * @throws UserRegistrationException - if E-Mail Address is already registered
-     */
-    public User register(@NotNull UserFrom userFrom) throws UserRegistrationException {
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
-        logger.error("Registering user...");
+    public User register(
+            @NotNull UserFrom userFrom,
+            WebRequest request
+
+    ) throws UserRegistrationException {
+
+        logger.error("[Try to register the user ...]");
 
         if (isEmailExists(userFrom.getEmail())) {
-            logger.error("Email is already exists");
-            throw new UserRegistrationException("Email already exists");
+            logger.error("[Email is already exists]");
+            throw new EmailExistsException("Email is already exists");
         }
 
-        User user = new User();
+        User user = new User(
+                userFrom.getFirstName(),
+                userFrom.getLastName(),
+                userFrom.getEmail(),
+                passwordEncoder.encode(userFrom.getPassword())
+        );
 
-        user.setEmail(userFrom.getEmail());
-        user.setFirstName(userFrom.getFirstName());
-        user.setLastName(userFrom.getLastName());
+        //publish onRegistration event
+        publishOnRegistrationEvent(user, request);
 
-        String encodedPassword = passwordEncoder.encode(userFrom.getPassword());
-
-        user.setPassword(encodedPassword);
-
+        //add user's role (default ROLE_USER)
         UserAuthority role = userAuthorityRepository.findByRole("ROLE_USER");
-
         user.addRole(role);
 
+        //save user
         return userRepository.save(user);
     }
+
 
     public boolean isEmailExists(String email) {
         return userRepository.findByEmailIgnoreCase(email) != null;
     }
 
 
-    public User getUserByToken(String token) {
-        return registerTokenRepository.findByToken(token).getUser();
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 
 
-    public RegisterVerificationToken saveVerificationToken(User user, String token) {
-        logger.error("Saving verification token to database ...");
-        RegisterVerificationToken myToken = new RegisterVerificationToken(token, user);
-        return registerTokenRepository.save(myToken);
+    public User findUserByVerificationToken(String token) {
+
+        RegisterVerificationToken verificationToken = registerTokenRepository.findByToken(token);
+
+        if (verificationToken != null) return verificationToken.getUser();
+        return null;
     }
+
 
     public RegisterVerificationToken getVerificationToken(String token) {
         return registerTokenRepository.findByToken(token);
     }
 
-    public void saveRegisteredUser(User user) {
-        userRepository.save(user);
+
+    public RegisterVerificationToken saveVerificationToken(User user, String token) {
+
+        logger.error("[Saving verification token ...]");
+
+        RegisterVerificationToken myToken = new RegisterVerificationToken(token, user);
+
+        return registerTokenRepository.save(myToken);
     }
+
+
+    private void publishOnRegistrationEvent(User user, WebRequest request) {
+
+        logger.error("[Publishing onRegistration event ...]");
+
+        ApplicationEvent event = new OnRegistrationCompleteEvent(user, request);
+
+        applicationEventPublisher.publishEvent(event);
+    }
+
 }

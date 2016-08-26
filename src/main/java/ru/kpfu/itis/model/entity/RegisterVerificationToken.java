@@ -16,7 +16,7 @@ public class RegisterVerificationToken {
     @Column(unique = true, nullable = false)
     private String token;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
@@ -24,8 +24,6 @@ public class RegisterVerificationToken {
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime expired;
 
-    @Column(nullable = false)
-    private boolean verified;
 
     public RegisterVerificationToken() {}
 
@@ -39,7 +37,6 @@ public class RegisterVerificationToken {
     @PrePersist
     private void setUp() {
         expired = new LocalDateTime().plusDays(1);
-        verified = false;
     }
 
     public long getId() {
@@ -58,10 +55,6 @@ public class RegisterVerificationToken {
         return expired;
     }
 
-    public boolean isVerified() {
-        return verified;
-    }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -74,10 +67,6 @@ public class RegisterVerificationToken {
         this.user = user;
     }
 
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
-
     //equals and hashcode
 
     @Override
@@ -88,7 +77,6 @@ public class RegisterVerificationToken {
         RegisterVerificationToken that = (RegisterVerificationToken) o;
 
         if (id != that.id) return false;
-        if (verified != that.verified) return false;
         if (!token.equals(that.token)) return false;
         return user.equals(that.user);
         //        return expired.equals(that.expired);
@@ -100,7 +88,6 @@ public class RegisterVerificationToken {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + token.hashCode();
         result = 31 * result + user.hashCode();
-        result = 31 * result + (verified ? 1 : 0);
         return result;
     }
 }

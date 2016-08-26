@@ -1,8 +1,7 @@
 package ru.kpfu.itis.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
@@ -13,22 +12,20 @@ import javax.mail.internet.InternetAddress;
 @Service
 public class MailService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MailService.class);
-
     @Autowired
     private JavaMailSender mailSender;
 
 
-    public void sendMail(String subject) {
+    public void sendMail(InternetAddress from, InternetAddress to, String subject) throws MailException {
 
-        MimeMessagePreparator preparator = mimeMessage -> {
+        MimeMessagePreparator mimeMessagePreparator = mimeMessage -> {
 
-            mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress("ramilsafnab1996@gmail.com"));
-            mimeMessage.setFrom(new InternetAddress("ramilsafnab1996@gmail.com"));
+            mimeMessage.setRecipient(Message.RecipientType.TO, to);
+            mimeMessage.setFrom(from);
             mimeMessage.setText(subject);
         };
 
-        this.mailSender.send(preparator);
+        this.mailSender.send(mimeMessagePreparator);
     }
 
 }

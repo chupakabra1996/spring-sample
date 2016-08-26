@@ -1,6 +1,6 @@
 package ru.kpfu.itis.exception;
 
-public class UserRegistrationException extends Exception {
+public class UserRegistrationException extends RuntimeException {
 
     public UserRegistrationException() {
         super();

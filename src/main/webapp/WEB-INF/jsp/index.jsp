@@ -11,6 +11,8 @@
 </head>
 <body>
    <p>You are welcome</p>
-
+    <c:if test="${message != null}">
+        <p>${message}</p>
+    </c:if>
 </body>
 </html>

@@ -4,13 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.env.Environment;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
+import ru.kpfu.itis.exception.InternetAddressException;
 import ru.kpfu.itis.model.entity.User;
 import ru.kpfu.itis.service.MailService;
 import ru.kpfu.itis.service.UserService;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.util.UUID;
 
 /**
@@ -28,38 +31,50 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     @Autowired
     private UserService userService;
 
-    private MessageSourceAccessor messages;
-
     @Autowired
-    public void setMessages(MessageSource messageSource) {
-        messages = new MessageSourceAccessor(messageSource);
-    }
+    private Environment env;
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
         this.confirmRegistration(event);
     }
 
-    private void confirmRegistration(OnRegistrationCompleteEvent event) {
+    private void confirmRegistration(OnRegistrationCompleteEvent event) throws MailException {
 
-        logger.error("");
+        logger.error("[Try to send confirmation email ...]");
 
-        User user = event.getUser();
+        User user = (User)event.getSource();
 
         String token = UUID.randomUUID().toString();
 
-        logger.error("Generated token - [" + token + "]");
         userService.saveVerificationToken(user, token);
 
-        String confirmationUrl = event.getUrl() + "/registrationConfirm?token=" + token; //TODO url check
-        logger.error("confirmation url is  - " + confirmationUrl);
+        String confirmUrl = event.getRequest().getContextPath() + "/user/signup/confirm?token=" + token;
 
-//        String message = messages.getMessage("Registration.user.success", "Registration success", event.getLocale());
-        String message = "Hello=)";
+        logger.error("[Confirmation url - `" + confirmUrl + "`]");
 
-        logger.error("Sending email ...");
+        String message = "You are successfully registered!\nConfirm your account -> ";
 
-        mailService.sendMail(message + " rn" + "http://localhost:8080" + confirmationUrl);
+        logger.error("[Sending email to `" + user.getEmail() + "` ...]");
+
+        String fromMail = env.getRequiredProperty("smtp.username");
+
+        try {
+
+            InternetAddress from = new InternetAddress(fromMail);
+            InternetAddress to = new InternetAddress(user.getEmail());
+
+            mailService.sendMail(from, to, message + "http://localhost:8080" + confirmUrl);
+
+        } catch (AddressException e) {
+
+            logger.error("[InternetAddress is not correct]");
+            throw new InternetAddressException("Email address is not correct", e);
+
+        } catch (MailException e) {
+
+            logger.error("[Can't send email from `" +  fromMail + "` to `" +  user.getEmail() + "`]", e);
+        }
 
     }
 }

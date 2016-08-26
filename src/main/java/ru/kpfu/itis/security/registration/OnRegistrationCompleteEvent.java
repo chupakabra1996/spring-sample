@@ -1,48 +1,26 @@
 package ru.kpfu.itis.security.registration;
 
 import org.springframework.context.ApplicationEvent;
+import org.springframework.web.context.request.WebRequest;
 import ru.kpfu.itis.model.entity.User;
-
-import java.util.Locale;
 
 /**
  * /TODO documentation
  */
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
 
-    private String url;
-    private User user;
-    private Locale locale;
+    private WebRequest request;
 
-    public OnRegistrationCompleteEvent(String url, User user, Locale locale) {
-        super(user);
-        this.url = url;
-        this.user = user;
-        this.locale = locale;
+    public OnRegistrationCompleteEvent(User user, WebRequest request) {
+        super(user); //user is a source
+        this.request = request;
     }
 
-
-    public String getUrl() {
-        return url;
+    public WebRequest getRequest() {
+        return request;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
+    public void setRequest(WebRequest request) {
+        this.request = request;
     }
 }

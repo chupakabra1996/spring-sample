@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -36,7 +38,11 @@ public class SecurityConfig {
 
     @Configuration
     @Order(2)
+    @PropertySource("classpath:/smtp/gmail_smtp.properties")
     public static class FormLoginWebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Autowired
+        private Environment env;
 
         @Autowired
         @Qualifier("hibernatePersistentTokenRepository")
@@ -52,7 +58,7 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
-                    .antMatchers("/", "/signup/**").permitAll()
+                    .antMatchers("/", "/user/signup/**").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
                 .and()
@@ -72,12 +78,7 @@ public class SecurityConfig {
                 .csrf()
                 .and()
                 .exceptionHandling()
-                    .accessDeniedPage("/access_denied")
-                 .and()
-                 .sessionManagement()
-                    .invalidSessionUrl("/invalidSession");
-
-
+                    .accessDeniedPage("/access_denied");
         }
 
 
@@ -122,15 +123,15 @@ public class SecurityConfig {
 
             mailSender.setDefaultEncoding("UTF-8");
 
-            mailSender.setHost("smtp.gmail.com");
-            mailSender.setPort(587);
-            mailSender.setUsername("ramilsafnab1996@gmail.com");
-            mailSender.setPassword("498034226pz4t");
+            mailSender.setHost(env.getRequiredProperty("smtp.host"));
+            mailSender.setPort(env.getRequiredProperty("smtp.port", Integer.class));
+            mailSender.setUsername(env.getRequiredProperty("smtp.username"));
+            mailSender.setPassword(env.getRequiredProperty("smtp.password"));
 
             Properties props = new Properties();
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.starttls.enable", "true");
-            props.setProperty("mail.debug", "true");
+            props.setProperty("mail.smtp.auth", env.getRequiredProperty("mail.smtp.auth"));
+            props.setProperty("mail.smtp.starttls.enable", env.getRequiredProperty("mail.smtp.starttls.enable"));
+            props.setProperty("mail.debug", env.getRequiredProperty("mail.debug"));
 
             mailSender.setJavaMailProperties(props);
 

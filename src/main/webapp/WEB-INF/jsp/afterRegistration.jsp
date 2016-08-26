@@ -6,9 +6,11 @@
 <html>
 <head>
     <meta content="text/html" charset="utf-8">
-    <title>Register Error</title>
+    <title>Confirm your email address</title>
 </head>
 <body>
-    Registration failed! =(
+    <c:if test="${message}">
+        <p>${message}</p>
+    </c:if>
 </body>
 </html>

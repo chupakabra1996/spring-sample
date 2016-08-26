@@ -9,6 +9,8 @@
     <title>Bad user</title>
 </head>
 <body>
-    User's ctoken invalid
+    <c:if test="${message != null}">
+        <p>${message}</p>
+    </c:if>
 </body>
 </html>
