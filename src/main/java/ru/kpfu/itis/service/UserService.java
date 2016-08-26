@@ -40,6 +40,9 @@ public class UserService {
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
+    @Autowired
+    private EmailVerifierService emailVerifierService;
+
     public User register(
         @NotNull UserFrom userFrom,
         String context
@@ -52,22 +55,41 @@ public class UserService {
             throw new EmailExistsException("Email is already exists");
         }
 
-        User user = new User(
-                userFrom.getFirstName(),
-                userFrom.getLastName(),
-                userFrom.getEmail(),
-                passwordEncoder.encode(userFrom.getPassword())
-        );
+        logger.error("[Building user ...]");
+        User user = buildUser(userFrom);
 
-        //publish onRegistration event
+        logger.error("[Verifying email address ...]");
+        verifyEmail(user);
+
+        logger.error("[Publishing registration event ...]");
         publishOnRegistrationEvent(user, context);
+
+        logger.error("[Saving user ...]");
+        return userRepository.save(user);
+    }
+
+
+    private User buildUser(UserFrom userFrom) {
+
+        User user = new User(userFrom.getFirstName(),
+            userFrom.getLastName(),
+            userFrom.getEmail(),
+            passwordEncoder.encode(userFrom.getPassword())
+        );
 
         //add user's role (default ROLE_USER)
         UserAuthority role = userAuthorityRepository.findByRole("ROLE_USER");
         user.addRole(role);
 
-        //save user
-        return userRepository.save(user);
+        return user;
+    }
+
+
+    private void verifyEmail(User user) {
+
+        if ( !emailVerifierService.check(user.getEmail()) ) {
+            throw new UserRegistrationException("Email is not valid!");
+        }
     }
 
 
@@ -77,16 +99,8 @@ public class UserService {
 
 
     public void updateUser(User user) {
+        logger.error("[Updating user ...]");
         userRepository.save(user);
-    }
-
-
-    public User findUserByVerificationToken(String token) {
-
-        RegisterVerificationToken verificationToken = registerTokenRepository.findByToken(token);
-
-        if (verificationToken != null) return verificationToken.getUser();
-        return null;
     }
 
 

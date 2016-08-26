@@ -123,14 +123,16 @@ public class RegistrationController {
 
         ModelAndView modelAndView = new ModelAndView();
 
+        modelAndView.setViewName("signup");
+        modelAndView.addObject("user", new UserFrom());
+
         if (ex instanceof InternetAddressException || ex instanceof UserRegistrationException) {
 
-            modelAndView.setViewName("signup");
             modelAndView.addObject("exception", ex.getMessage());
 
         } else {
 
-            modelAndView.setViewName("signup");
+
             modelAndView.addObject("exception", "Can't send an email! \n Please, check your email!");
         }
 
