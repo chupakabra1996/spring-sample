@@ -114,7 +114,7 @@ public class RegistrationController {
         redirectAttributes.addFlashAttribute("message","You are successfully activate your account\n " +
                 "now enter your email and password. Good luck=)");
 
-        return "redirect:/login"; //TODO check, was /
+        return "redirect:/login";
     }
 
 

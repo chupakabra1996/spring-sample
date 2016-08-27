@@ -78,7 +78,7 @@ public class SecurityConfig {
                     .permitAll()
                 .and()
                 .rememberMe()
-                    .tokenValiditySeconds(86400)
+                    .tokenValiditySeconds(20)
                     .tokenRepository(persistentTokenRepository)
                 .and()
                 .csrf()
