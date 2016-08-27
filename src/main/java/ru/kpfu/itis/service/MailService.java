@@ -15,7 +15,6 @@ public class MailService {
     @Autowired
     private JavaMailSender mailSender;
 
-
     public void sendMail(InternetAddress from, InternetAddress to, String subject) throws MailException {
 
         MimeMessagePreparator mimeMessagePreparator = mimeMessage -> {

@@ -17,7 +17,7 @@ import javax.mail.internet.InternetAddress;
 import java.util.UUID;
 
 /**
- * TODO documentation
+ * Registration listener to save verification token and send an email to a user
  */
 
 @Component
@@ -45,26 +45,25 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         User user = (User)event.getSource();
 
+        //generating token
         String token = UUID.randomUUID().toString();
 
         userService.saveVerificationToken(user, token);
 
         String confirmUrl = event.getContext() + "/user/signup/confirm?token=" + token;
 
-        logger.error("[Confirmation url - `" + confirmUrl + "`]");
-
         String message = "You are successfully registered!\nConfirm your account -> ";
 
-        logger.error("[Sending email to `" + user.getEmail() + "` ...]");
-
         String fromMail = env.getRequiredProperty("smtp.username");
+
+        logger.error("[Sending email to `" + user.getEmail() + "` ...]");
 
         try {
 
             InternetAddress from = new InternetAddress(fromMail);
             InternetAddress to = new InternetAddress(user.getEmail());
 
-            mailService.sendMail(from, to, message + "http://localhost:8080" + confirmUrl);
+            mailService.sendMail(from, to, message + env.getRequiredProperty("app.url") + confirmUrl);
 
         } catch (AddressException e) {
 

@@ -6,6 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -25,7 +27,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/access_denied").setViewName("accessDenied");
+        registry.addViewController("/access_denied").setViewName("security/accessDenied");
+
     }
 
     @Override
@@ -78,6 +81,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
 
         return cookieLocaleResolver;
+    }
+
+
+    @Bean
+    public Validator validator() {
+        return new LocalValidatorFactoryBean();
     }
 
 }

@@ -17,6 +17,7 @@
         ${message}
     </c:if>
 
+
     <c:url value="/login" var="loginUrl"/>
 
     <form:form name="f" action="${loginUrl}" method="post">
@@ -24,18 +25,19 @@
             <legend>Please Login</legend>
 
             <c:if test="${param.error != null}">
-                <div class="alert alert-error">
-                    Invalid username and password.
-                </div>
+                ${SPRING_SECURITY_LAST_EXCEPTION}
             </c:if>
+
+            <br/>
 
             <c:if test="${param.logout != null}">
                 <div class="alert alert-success">
                     You have been logged out.
                 </div>
             </c:if>
+
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" value="${username}"/>
+            <input type="text" id="username" name="username"/>
             <label for="password">Password</label>
             <input type="password" id="password" name="password"/>
 

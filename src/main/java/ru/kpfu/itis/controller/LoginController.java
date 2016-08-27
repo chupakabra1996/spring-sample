@@ -18,7 +18,7 @@ public class LoginController {
     @RequestMapping(method = RequestMethod.GET)
     public String showLoginPage(Principal principal) {
 
-        if (principal == null) return "login";
+        if (principal == null) return "security/login";
         return "redirect:/home";
     }
 

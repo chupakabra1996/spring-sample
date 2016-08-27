@@ -1,22 +1,20 @@
 package ru.kpfu.itis.security.cookie;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kpfu.itis.model.entity.RememberMeToken;
 import ru.kpfu.itis.repository.LoginTokensRepository;
 
 import java.util.Date;
 
-@Repository("hibernatePersistentTokenRepository")
-@Transactional
-public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
+/**
+ * PersistentTokenRepository custom implementation for remember-me functionality
+ */
 
-    private static final Logger logger = LoggerFactory.getLogger(HibernateTokenRepositoryImpl.class);
+@Repository("hibernatePersistentTokenRepository")
+public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
 
     @Autowired
     private LoginTokensRepository loginTokensRepository;

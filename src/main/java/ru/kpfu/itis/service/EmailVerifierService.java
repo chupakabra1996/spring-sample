@@ -16,21 +16,32 @@ import ru.kpfu.itis.exception.EmailVerifyingException;
 
 import java.io.IOException;
 
+/**
+ * Email verification service
+ * Using email api to check whether email address is valid and exists
+ */
 @Service
 public class EmailVerifierService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailVerifierService.class);
 
-    private HttpClient httpClient;
-
     @Autowired
     private Environment env;
+
+    private HttpClient httpClient;
 
 
     public EmailVerifierService() {
         this.httpClient = HttpClientBuilder.create().build();
     }
 
+
+    /**
+     * Check if emailAddress is exists
+     * @param emailAddress - email address
+     * @return true if verified and false if not
+     * Can throw Runtime exceptions (they are server internal exceptions)
+     */
     public boolean check(String emailAddress) {
 
         String json = getResponse(emailAddress);
@@ -68,7 +79,7 @@ public class EmailVerifierService {
 
         try {
 
-            logger.error("[Try to verify email ...]");
+            logger.error("[Sending http get request ...]");
 
             HttpGet get = new HttpGet(getUrl(emailAddress));
 
@@ -78,8 +89,8 @@ public class EmailVerifierService {
 
         } catch (IOException e) {
 
-            logger.error("[Email verifying exception]", e);
-            throw new EmailVerifyingException("Email api service is not available now!");
+            logger.error("[Http request exception]", e);
+            throw new EmailVerifyingException("Email api service is not available now");
         }
     }
 

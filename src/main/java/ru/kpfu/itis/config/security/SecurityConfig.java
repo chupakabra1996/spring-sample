@@ -3,6 +3,7 @@ package ru.kpfu.itis.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import ru.kpfu.itis.security.authentication.CustomAuthenticationFailureHandler;
 import ru.kpfu.itis.service.UserDetailsServiceImpl;
 
 import java.util.Properties;
@@ -35,14 +37,17 @@ public class SecurityConfig {
     /**
      * Login form based config
      */
-
-    @Configuration
     @Order(2)
+    @Configuration
     @PropertySource("classpath:/smtp/gmail_smtp.properties")
+    @ComponentScan(value = {"ru.kpfu.itis.security"})
     public static class FormLoginWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Autowired
         private Environment env;
+
+        @Autowired
+        private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
         @Autowired
         @Qualifier("hibernatePersistentTokenRepository")
@@ -58,14 +63,15 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
+                    .antMatchers("/login/**").permitAll()
                     .antMatchers("/", "/user/signup/**").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                    .loginPage("/login")
+                    .loginPage("/login").permitAll()
                     .defaultSuccessUrl("/home")
-                    .permitAll()
+                    .failureHandler(customAuthenticationFailureHandler)
                 .and()
                 .logout()
                     .logoutSuccessUrl("/login?logout")

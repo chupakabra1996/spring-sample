@@ -5,6 +5,10 @@ import org.joda.time.LocalDateTime;
 
 import javax.persistence.*;
 
+/**
+ * Registration token to make available to confirm user's account
+ */
+
 @Entity
 @Table(name = "register_tokens")
 public class RegisterVerificationToken {
@@ -16,7 +20,7 @@ public class RegisterVerificationToken {
     @Column(unique = true, nullable = false)
     private String token;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 

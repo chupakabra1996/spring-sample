@@ -3,8 +3,6 @@ package ru.kpfu.itis.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kpfu.itis.exception.EmailExistsException;
@@ -16,9 +14,6 @@ import ru.kpfu.itis.model.form.UserFrom;
 import ru.kpfu.itis.repository.RegisterTokensRepository;
 import ru.kpfu.itis.repository.UserAuthorityRepository;
 import ru.kpfu.itis.repository.UserRepository;
-import ru.kpfu.itis.security.registration.OnRegistrationCompleteEvent;
-
-import javax.validation.constraints.NotNull;
 
 @Service
 public class UserService {
@@ -37,16 +32,8 @@ public class UserService {
     @Autowired
     private RegisterTokensRepository registerTokenRepository;
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
 
-    @Autowired
-    private EmailVerifierService emailVerifierService;
-
-    public User register(
-        @NotNull UserFrom userFrom,
-        String context
-    ) throws UserRegistrationException {
+    public User register(UserFrom userFrom) throws UserRegistrationException {
 
         logger.error("[Try to register the user ...]");
 
@@ -57,12 +44,6 @@ public class UserService {
 
         logger.error("[Building user ...]");
         User user = buildUser(userFrom);
-
-        logger.error("[Verifying email address ...]");
-        verifyEmail(user);
-
-        logger.error("[Publishing registration event ...]");
-        publishOnRegistrationEvent(user, context);
 
         logger.error("[Saving user ...]");
         return userRepository.save(user);
@@ -85,21 +66,15 @@ public class UserService {
     }
 
 
-    private void verifyEmail(User user) {
-
-        if ( !emailVerifierService.check(user.getEmail()) ) {
-            throw new UserRegistrationException("Email is not valid!");
-        }
-    }
-
-
     public boolean isEmailExists(String email) {
         return userRepository.findByEmailIgnoreCase(email) != null;
     }
 
 
     public void updateUser(User user) {
+
         logger.error("[Updating user ...]");
+
         userRepository.save(user);
     }
 
@@ -116,16 +91,6 @@ public class UserService {
         RegisterVerificationToken myToken = new RegisterVerificationToken(token, user);
 
         return registerTokenRepository.save(myToken);
-    }
-
-
-    private void publishOnRegistrationEvent(User user, String context) {
-
-        logger.error("[Publishing onRegistration event ...]");
-
-        ApplicationEvent event = new OnRegistrationCompleteEvent(user, context);
-
-        applicationEventPublisher.publishEvent(event);
     }
 
 }

@@ -6,6 +6,10 @@ import ru.kpfu.itis.validator.annotation.ValidEmail;
 
 import javax.validation.constraints.Size;
 
+/**
+ * Simple form class to register user
+ */
+
 @PasswordMatches
 public class UserFrom {
 
