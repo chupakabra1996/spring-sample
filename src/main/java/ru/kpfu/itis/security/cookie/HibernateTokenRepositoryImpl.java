@@ -70,8 +70,7 @@ public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
 
         Root root = delete.from(RememberMeToken.class);
 
-        delete
-                .where(cb.equal(root.get("username"), username));
+        delete.where(cb.equal(root.get("username"), username));
 
         entityManager.createQuery(delete).executeUpdate();
 
