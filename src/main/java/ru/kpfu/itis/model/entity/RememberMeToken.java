@@ -10,7 +10,7 @@ public class RememberMeToken {
     @Id
     private String series;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String username;
 
     @Column(unique = true, nullable = false)
