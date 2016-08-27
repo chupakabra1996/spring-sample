@@ -2,10 +2,7 @@ package ru.kpfu.itis.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,14 +20,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.kpfu.itis.security.authentication.CustomAuthenticationFailureHandler;
 import ru.kpfu.itis.service.UserDetailsServiceImpl;
 
 import java.util.Properties;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
 
@@ -39,8 +37,9 @@ public class SecurityConfig {
      */
     @Order(2)
     @Configuration
-    @PropertySource("classpath:/smtp/gmail_smtp.properties")
     @ComponentScan(value = {"ru.kpfu.itis.security"})
+    @PropertySource("classpath:/smtp/gmail_smtp.properties")
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
     public static class FormLoginWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Autowired
@@ -63,10 +62,11 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
-                    .antMatchers("/login/**").permitAll()
-                    .antMatchers("/", "/user/signup/**").permitAll()
-                    .antMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
+//                    .antMatchers("/login/**").permitAll()
+//                    .antMatchers("/", "/user/signup/**").permitAll()
+//                    .antMatchers("/admin/**").hasRole("ADMIN")
+//                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
                 .and()
                 .formLogin()
                     .loginPage("/login").permitAll()
@@ -86,6 +86,8 @@ public class SecurityConfig {
                 .and()
                 .exceptionHandling()
                     .accessDeniedPage("/access_denied");
+
+            http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
         }
 
 
@@ -143,6 +145,14 @@ public class SecurityConfig {
             mailSender.setJavaMailProperties(props);
 
             return mailSender;
+        }
+
+        @Bean
+        public CharacterEncodingFilter characterEncodingFilter() {
+            CharacterEncodingFilter filter = new CharacterEncodingFilter();
+            filter.setEncoding("UTF-8");
+            filter.setForceEncoding(true);
+            return filter;
         }
 
     }

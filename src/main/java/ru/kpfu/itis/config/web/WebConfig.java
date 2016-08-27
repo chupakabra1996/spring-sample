@@ -4,6 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.validation.Validator;
@@ -22,6 +23,7 @@ import java.util.Locale;
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @ComponentScan(basePackages = {"ru.kpfu.itis.controller"})
+@EnableAspectJAutoProxy
 public class WebConfig extends WebMvcConfigurerAdapter {
 
 
