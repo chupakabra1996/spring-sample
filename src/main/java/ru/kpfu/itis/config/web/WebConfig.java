@@ -21,9 +21,9 @@ import java.util.Locale;
 
 @Configuration
 @EnableWebMvc
+@EnableAspectJAutoProxy
 @EnableSpringDataWebSupport
 @ComponentScan(basePackages = {"ru.kpfu.itis.controller"})
-@EnableAspectJAutoProxy
 public class WebConfig extends WebMvcConfigurerAdapter {
 
 

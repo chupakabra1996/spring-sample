@@ -62,11 +62,10 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
-//                    .antMatchers("/login/**").permitAll()
-//                    .antMatchers("/", "/user/signup/**").permitAll()
-//                    .antMatchers("/admin/**").hasRole("ADMIN")
-//                    .anyRequest().authenticated()
-                    .anyRequest().permitAll()
+                    .antMatchers("/login/**").permitAll()
+                    .antMatchers("/", "/user/signup/**").permitAll()
+                    .antMatchers("/admin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated()
                 .and()
                 .formLogin()
                     .loginPage("/login").permitAll()

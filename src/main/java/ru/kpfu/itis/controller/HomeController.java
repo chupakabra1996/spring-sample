@@ -1,6 +1,5 @@
 package ru.kpfu.itis.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,6 @@ import java.security.Principal;
 @RequestMapping
 public class HomeController {
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String showHomePage(Principal principal, ModelMap model) {
 
