@@ -12,8 +12,8 @@
 <body>
     <c:if test="${user != null}">
         <p>Welcome, ${user}</p>
-        <c:url value="/logout" var="logoutUrl"/>
-        <form:form action="${logoutUrl}" method="post">
+        <c:url value="/perform_logout" var="logoutUrl"/>
+        <form:form id="logoutForm" action="${logoutUrl}" method="post">
             <button type="submit">log out</button>
         </form:form>
     </c:if>

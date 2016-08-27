@@ -2,7 +2,10 @@ package ru.kpfu.itis.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -74,7 +77,7 @@ public class SecurityConfig {
                 .and()
                 .logout()
                     .logoutSuccessUrl("/login?logout")
-                    .logoutUrl("/logout")
+                    .logoutUrl("/perform_logout")
                     .permitAll()
                 .and()
                 .rememberMe()
