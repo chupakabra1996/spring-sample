@@ -1,12 +1,18 @@
 package ru.kpfu.itis.security.cookie;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kpfu.itis.model.entity.RememberMeToken;
 import ru.kpfu.itis.repository.LoginTokensRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
 import java.util.Date;
 
 /**
@@ -14,13 +20,21 @@ import java.util.Date;
  */
 
 @Repository("hibernatePersistentTokenRepository")
+@Transactional
 public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(HibernateTokenRepositoryImpl.class);
 
     @Autowired
     private LoginTokensRepository loginTokensRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
+
+        logger.error("[Creating new token for user : `" + token.getUsername() + "`]");
 
         RememberMeToken rememberMeToken = new RememberMeToken();
 
@@ -35,6 +49,8 @@ public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
     @Override
     public PersistentRememberMeToken getTokenForSeries(String series) {
 
+        logger.error("[Get token for series : `"  + series + "`]");
+
         RememberMeToken rememberMeToken = loginTokensRepository.findBySeries(series);
 
         if (rememberMeToken == null) return null;
@@ -46,20 +62,38 @@ public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
     @Override
     public void removeUserTokens(String username) {
 
-        RememberMeToken rememberMeToken = loginTokensRepository.findByUsername(username);
+        logger.error("[Removing token if any for user : `" + username + "`]");
 
-        if (rememberMeToken != null) loginTokensRepository.delete(rememberMeToken);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+        CriteriaDelete<RememberMeToken> delete = cb.createCriteriaDelete(RememberMeToken.class);
+
+        Root root = delete.from(RememberMeToken.class);
+
+        delete
+                .where(cb.equal(root.get("username"), username));
+
+        entityManager.createQuery(delete).executeUpdate();
+
     }
 
     @Override
     public void updateToken(String seriesId, String tokenValue, Date lastUsed) {
 
-        RememberMeToken rememberMeToken = loginTokensRepository.findBySeries(seriesId);
+        logger.error("[Update token : `" + tokenValue + "`]");
 
-        rememberMeToken.setToken(tokenValue);
-        rememberMeToken.setLast_used(lastUsed);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
-        loginTokensRepository.save(rememberMeToken);
+        CriteriaUpdate<RememberMeToken> update = cb.createCriteriaUpdate(RememberMeToken.class);
+
+        Root root = update.from(RememberMeToken.class);
+
+        update
+                .set("token", tokenValue)
+                .set("last_used", lastUsed)
+                .where(cb.equal(root.get("series"), seriesId));
+
+        entityManager.createQuery(update).executeUpdate();
     }
 
 }
