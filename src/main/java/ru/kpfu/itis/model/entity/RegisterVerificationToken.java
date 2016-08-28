@@ -28,7 +28,6 @@ public class RegisterVerificationToken {
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime expired;
 
-
     public RegisterVerificationToken() {}
 
     public RegisterVerificationToken(String token, User user) {
@@ -40,6 +39,7 @@ public class RegisterVerificationToken {
 
     @PrePersist
     private void setUp() {
+        //expired after one day from registration
         expired = new LocalDateTime().plusDays(1);
     }
 
@@ -69,6 +69,10 @@ public class RegisterVerificationToken {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setExpired(LocalDateTime expired) {
+        this.expired = expired;
     }
 
     //equals and hashcode

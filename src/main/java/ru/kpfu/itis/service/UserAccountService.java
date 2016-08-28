@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.kpfu.itis.exception.EmailExistsException;
-import ru.kpfu.itis.exception.UserRegistrationException;
+import ru.kpfu.itis.exception.user.EmailExistsException;
+import ru.kpfu.itis.exception.user.UserRegistrationException;
 import ru.kpfu.itis.model.entity.RegisterVerificationToken;
 import ru.kpfu.itis.model.entity.User;
 import ru.kpfu.itis.model.entity.UserAuthority;
@@ -16,9 +16,9 @@ import ru.kpfu.itis.repository.UserAuthorityRepository;
 import ru.kpfu.itis.repository.UserRepository;
 
 @Service
-public class UserService {
+public class UserAccountService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserAccountService.class);
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -38,35 +38,24 @@ public class UserService {
         logger.error("[Try to register the user ...]");
 
         if (isEmailExists(userFrom.getEmail())) {
+
             logger.error("[Email is already exists]");
+
             throw new EmailExistsException("Email is already exists");
         }
 
         logger.error("[Building user ...]");
+
         User user = buildUser(userFrom);
 
         logger.error("[Saving user ...]");
+
         return userRepository.save(user);
     }
 
 
-    private User buildUser(UserFrom userFrom) {
-
-        User user = new User(userFrom.getFirstName(),
-            userFrom.getLastName(),
-            userFrom.getEmail(),
-            passwordEncoder.encode(userFrom.getPassword())
-        );
-
-        //add user's role (default ROLE_USER)
-        UserAuthority role = userAuthorityRepository.findByRole("ROLE_USER");
-        user.addRole(role);
-
-        return user;
-    }
-
-
     public boolean isEmailExists(String email) {
+
         return userRepository.findByEmailIgnoreCase(email) != null;
     }
 
@@ -76,6 +65,12 @@ public class UserService {
         logger.error("[Updating user ...]");
 
         userRepository.save(user);
+    }
+
+
+    public User findUserByEmail(String email) {
+
+        return userRepository.findByEmailIgnoreCase(email);
     }
 
 
@@ -91,6 +86,26 @@ public class UserService {
         RegisterVerificationToken myToken = new RegisterVerificationToken(token, user);
 
         return registerTokenRepository.save(myToken);
+    }
+
+
+    public void deleteVerifiedToken(RegisterVerificationToken token) {
+
+        registerTokenRepository.delete(token);
+    }
+
+
+    private User buildUser(UserFrom userFrom) {
+
+        User user = new User(userFrom.getFirstName(), userFrom.getLastName(),
+                userFrom.getEmail(), passwordEncoder.encode(userFrom.getPassword()));
+
+        //add user's role (default ROLE_USER)
+        UserAuthority role = userAuthorityRepository.findByRole("ROLE_USER");
+
+        user.addRole(role);
+
+        return user;
     }
 
 }

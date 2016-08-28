@@ -6,12 +6,11 @@
 <html>
 <head>
     <meta content="text/html" charset="utf-8">
-    <title>Confirm your email address</title>
+    <title>You are locked</title>
 </head>
 <body>
-    <c:if test="${message}">
-        <p>${message}</p>
-    </c:if>
-    <a href="<c:url value='/login'/>">Log in</a>
+    <p>Your account was locked by admin</p>
+    <p>You can send email :</p>
+    <p>Here email sending form....</p>
 </body>
 </html>

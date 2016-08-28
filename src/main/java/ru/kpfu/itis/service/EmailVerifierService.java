@@ -38,11 +38,14 @@ public class EmailVerifierService {
 
     /**
      * Check if emailAddress is exists
+     *
      * @param emailAddress - email address
      * @return true if verified and false if not
      * Can throw Runtime exceptions (they are server internal exceptions)
      */
-    public boolean check(String emailAddress) {
+    public boolean isValid(String emailAddress) {
+
+        logger.error("[Verifying user's email : `" + emailAddress + "`]");
 
         String json = getResponse(emailAddress);
 
@@ -59,6 +62,7 @@ public class EmailVerifierService {
         } catch (IOException e) {
 
             logger.error("[Cant't parse response json]", e);
+
             throw new EmailVerifyingException("Response json is not valid");
         }
 
@@ -90,6 +94,7 @@ public class EmailVerifierService {
         } catch (IOException e) {
 
             logger.error("[Http request exception]", e);
+
             throw new EmailVerifyingException("Email api service is not available now");
         }
     }

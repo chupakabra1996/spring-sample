@@ -1,4 +1,4 @@
-package ru.kpfu.itis.exception;
+package ru.kpfu.itis.exception.user;
 
 /**
  * Exception that occurs when email is already exist in database

@@ -1,30 +1,56 @@
 package ru.kpfu.itis.service;
 
+import freemarker.template.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import ru.kpfu.itis.model.entity.User;
 
 import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
+import java.util.Map;
 
 @Service
 public class MailService {
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private JavaMailSender mailSender;
 
-    public void sendMail(InternetAddress from, InternetAddress to, String subject) throws MailException {
+    @Autowired
+    private FreeMarkerConfigurer freeMarkerConfigurer;
 
-        MimeMessagePreparator mimeMessagePreparator = mimeMessage -> {
 
-            mimeMessage.setRecipient(Message.RecipientType.TO, to);
-            mimeMessage.setFrom(from);
-            mimeMessage.setText(subject);
+    public void sendConfirmAccountMessage(Map<String, Object> model) {
+
+        Configuration configuration = freeMarkerConfigurer.getConfiguration();
+
+        MimeMessagePreparator preparator = mimeMessage -> {
+
+            User user = (User) model.get("user");
+
+            mimeMessage.setRecipients(Message.RecipientType.TO, user.getEmail());
+
+            mimeMessage.setFrom(env.getRequiredProperty("smtp.username"));
+
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+
+
+            String content = FreeMarkerTemplateUtils.processTemplateIntoString(configuration
+                    .getTemplate("accountConfirmationTempl.ftl"), model);
+
+            helper.setText(content, true);
         };
 
-        this.mailSender.send(mimeMessagePreparator);
+        mailSender.send(preparator);
+
     }
+
 
 }

@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -29,8 +26,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.kpfu.itis.security.authentication.CustomAuthenticationFailureHandler;
 import ru.kpfu.itis.service.UserDetailsServiceImpl;
 
-import java.util.Properties;
-
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -41,15 +36,11 @@ public class SecurityConfig {
     @Order(2)
     @Configuration
     @ComponentScan(value = {"ru.kpfu.itis.security"})
-    @PropertySource("classpath:/smtp/gmail_smtp.properties")
     @EnableGlobalMethodSecurity(prePostEnabled = true)
     public static class FormLoginWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Autowired
         private Environment env;
-
-        @Autowired
-        private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
         @Autowired
         @Qualifier("hibernatePersistentTokenRepository")
@@ -65,6 +56,7 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
+                    .antMatchers("/user/account/confirm/**").permitAll()
                     .antMatchers("/login/**").permitAll()
                     .antMatchers("/", "/user/signup/**").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN")
@@ -73,7 +65,7 @@ public class SecurityConfig {
                 .formLogin()
                     .loginPage("/login").permitAll()
                     .defaultSuccessUrl("/home")
-                    .failureHandler(customAuthenticationFailureHandler)
+                    .failureHandler(customAuthenticationFailureHandler())
                 .and()
                 .logout()
                     .logoutSuccessUrl("/login?logout")
@@ -81,7 +73,7 @@ public class SecurityConfig {
                     .permitAll()
                 .and()
                 .rememberMe()
-                    .tokenValiditySeconds(86400)
+                    .tokenValiditySeconds(86400) //1 day
                     .tokenRepository(persistentTokenRepository)
                 .and()
                 .csrf()
@@ -103,6 +95,10 @@ public class SecurityConfig {
             return new UserDetailsServiceImpl();
         }
 
+        @Bean
+        public CustomAuthenticationFailureHandler customAuthenticationFailureHandler() {
+            return new CustomAuthenticationFailureHandler();
+        }
 
         @Bean
         public DaoAuthenticationProvider authenticationProvider() {
@@ -127,27 +123,6 @@ public class SecurityConfig {
             return new HttpSessionEventPublisher();
         }
 
-        @Bean
-        public JavaMailSender mailSender() {
-
-            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-
-            mailSender.setDefaultEncoding("UTF-8");
-
-            mailSender.setHost(env.getRequiredProperty("smtp.host"));
-            mailSender.setPort(env.getRequiredProperty("smtp.port", Integer.class));
-            mailSender.setUsername(env.getRequiredProperty("smtp.username"));
-            mailSender.setPassword(env.getRequiredProperty("smtp.password"));
-
-            Properties props = new Properties();
-            props.setProperty("mail.smtp.auth", env.getRequiredProperty("mail.smtp.auth"));
-            props.setProperty("mail.smtp.starttls.enable", env.getRequiredProperty("mail.smtp.starttls.enable"));
-            props.setProperty("mail.debug", env.getRequiredProperty("mail.debug"));
-
-            mailSender.setJavaMailProperties(props);
-
-            return mailSender;
-        }
 
         @Bean
         public CharacterEncodingFilter characterEncodingFilter() {

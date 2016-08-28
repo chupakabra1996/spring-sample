@@ -1,4 +1,4 @@
-package ru.kpfu.itis.exception;
+package ru.kpfu.itis.exception.user;
 
 /**
  * General exception for registration flow

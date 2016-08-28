@@ -6,11 +6,9 @@
 <html>
 <head>
     <meta content="text/html" charset="utf-8">
-    <title>Bad user</title>
+    <title>Test Mail</title>
 </head>
 <body>
-    <c:if test="${message != null}">
-        <p>${message}</p>
-    </c:if>
+    <p style="text-align: center; font-size: 20pt">Test mail sending!</p>
 </body>
 </html>

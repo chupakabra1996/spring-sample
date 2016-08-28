@@ -1,10 +1,7 @@
 package ru.kpfu.itis.config.web;
 
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.validation.Validator;
@@ -25,7 +22,6 @@ import java.util.Locale;
 @EnableSpringDataWebSupport
 @ComponentScan(basePackages = {"ru.kpfu.itis.controller"})
 public class WebConfig extends WebMvcConfigurerAdapter {
-
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -90,5 +86,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public Validator validator() {
         return new LocalValidatorFactoryBean();
     }
+
 
 }

@@ -69,6 +69,8 @@
         <!--slf4j logging-->
         <slf4j-api.version>1.7.21</slf4j-api.version>
 
+        <freemarker.version>2.3.23</freemarker.version>
+
     </properties>
 
     <dependencies>
@@ -281,6 +283,14 @@
             <artifactId>httpclient</artifactId>
             <version>${apache.http-client.version}</version>
         </dependency>
+
+        <!--Freemarker-->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
 
     </dependencies>
 

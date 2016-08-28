@@ -12,9 +12,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {EmailVerifyingException.class})
     public ModelAndView emailVerificationExceptionHandler(Exception ex) {
 
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.setViewName("error/serverError");
+        ModelAndView modelAndView = new ModelAndView("error/serverError");
 
         modelAndView.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -22,7 +20,5 @@ public class GlobalExceptionHandler {
 
         return modelAndView;
     }
-
-
 
 }
