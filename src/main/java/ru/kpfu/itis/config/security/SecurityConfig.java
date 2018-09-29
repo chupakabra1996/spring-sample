@@ -31,7 +31,6 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfig {
 
-
     /**
      * Login form based config
      */

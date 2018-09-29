@@ -1,12 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>ri.kpfu.itis</groupId>
-    <artifactId>webstore</artifactId>
+    <artifactId>spring-webapp-demo</artifactId>
     <packaging>war</packaging>
     <version>0.0.1</version>
-    <name>WebStore Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+
+    <name>Spring Webapp Demo</name>
+
 
     <!--Project Properties-->
     <properties>
@@ -36,7 +39,7 @@
         <!--hibernate-->
         <hibernate.version>5.2.2.Final</hibernate.version>
 
-        <!--postgres-->
+        <!--mysql-->
         <mysql.version>5.1.38</mysql.version>
 
         <!--dbcp2 connection pool-->
@@ -89,7 +92,7 @@
         </dependency>
 
 
-        <!--jsp-api-->
+        <!-- JSP -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jsp-api</artifactId>
@@ -98,7 +101,7 @@
         </dependency>
 
 
-        <!--Java EE-->
+        <!-- Java EE -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -118,7 +121,7 @@
             <version>${javax.servlet-api.version}</version>
         </dependency>
 
-        <!--Spring-->
+        <!-- Spring -->
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -152,7 +155,7 @@
         </dependency>
 
 
-        <!--Spring data-->
+        <!-- Spring data -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
@@ -169,12 +172,11 @@
             <artifactId>spring-tx</artifactId>
         </dependency>
 
-        <!--Spring aop-->
+        <!-- Spring AOP -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -188,12 +190,11 @@
             <version>1.8.9</version>
         </dependency>
 
-        <!--hibernate-->
+        <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -211,7 +212,7 @@
             </exclusions>
         </dependency>
 
-        <!--javax validation-->
+        <!-- Javax validation -->
 
         <dependency>
             <groupId>javax.validation</groupId>
@@ -220,7 +221,7 @@
         </dependency>
 
 
-        <!--Postgres-->
+        <!-- MySQL -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -228,14 +229,14 @@
         </dependency>
 
 
-        <!--Connection pool-->
+        <!-- Connection pool -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
             <version>${dbcp2.version}</version>
         </dependency>
 
-        <!--Spring Security-->
+        <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -256,28 +257,28 @@
             <artifactId>spring-security-taglibs</artifactId>
         </dependency>
 
-        <!--logging log4j-->
+        <!-- Logging (log4j) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${log4j.version}</version>
         </dependency>
 
-        <!--javax mail api-->
+        <!-- Mail -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
             <version>${javax.mail-api.version}</version>
         </dependency>
 
-        <!--jackson json-->
+        <!-- JSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-databind.version}</version>
         </dependency>
 
-        <!--apache http client-->
+        <!-- HTTP -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -288,8 +289,8 @@
 
 
     <dependencyManagement>
-        <dependencies>
 
+        <dependencies>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
@@ -329,13 +330,12 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-api.version}</version>
             </dependency>
-
-
         </dependencies>
+
     </dependencyManagement>
 
     <build>
-        <finalName>WebStore</finalName>
+        <finalName>SpringDemo</finalName>
 
         <plugins>
 

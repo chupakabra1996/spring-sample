@@ -43,7 +43,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         logger.error("[Try to send confirmation email ...]");
 
-        User user = (User)event.getSource();
+        User user = (User) event.getSource();
 
         //generating token
         String token = UUID.randomUUID().toString();
@@ -72,7 +72,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         } catch (MailException e) {
 
-            logger.error("[Can't send email from `" +  fromMail + "` to `" +  user.getEmail() + "`]", e);
+            logger.error("[Can't send email from `" + fromMail + "` to `" + user.getEmail() + "`]", e);
         }
 
     }

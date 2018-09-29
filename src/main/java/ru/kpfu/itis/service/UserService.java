@@ -53,9 +53,9 @@ public class UserService {
     private User buildUser(UserFrom userFrom) {
 
         User user = new User(userFrom.getFirstName(),
-            userFrom.getLastName(),
-            userFrom.getEmail(),
-            passwordEncoder.encode(userFrom.getPassword())
+                userFrom.getLastName(),
+                userFrom.getEmail(),
+                passwordEncoder.encode(userFrom.getPassword())
         );
 
         //add user's role (default ROLE_USER)

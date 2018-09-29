@@ -38,6 +38,7 @@ public class EmailVerifierService {
 
     /**
      * Check if emailAddress is exists
+     *
      * @param emailAddress - email address
      * @return true if verified and false if not
      * Can throw Runtime exceptions (they are server internal exceptions)

@@ -49,7 +49,7 @@ public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
     @Override
     public PersistentRememberMeToken getTokenForSeries(String series) {
 
-        logger.error("[Get token for series : `"  + series + "`]");
+        logger.error("[Get token for series : `" + series + "`]");
 
         RememberMeToken rememberMeToken = loginTokensRepository.findBySeries(series);
 

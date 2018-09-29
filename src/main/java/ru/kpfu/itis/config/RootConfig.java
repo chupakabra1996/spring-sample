@@ -8,7 +8,7 @@ import ru.kpfu.itis.config.hibernate.HibernateConfig;
 import ru.kpfu.itis.config.security.SecurityConfig;
 
 @Configuration
-@Import({ HibernateConfig.class, SecurityConfig.class })
+@Import({HibernateConfig.class, SecurityConfig.class})
 @ComponentScan(basePackages = {"ru.kpfu.itis.service"})
 @PropertySource(value = {"classpath:/api/email_verification.properties", "classpath:/application.properties"})
 public class RootConfig {

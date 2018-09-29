@@ -22,7 +22,8 @@ public class UserAuthority implements GrantedAuthority {
     private Set<User> users = new HashSet<>();
 
 
-    public UserAuthority() {}
+    public UserAuthority() {
+    }
 
     //methods
 

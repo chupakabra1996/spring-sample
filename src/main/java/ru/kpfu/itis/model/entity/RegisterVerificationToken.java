@@ -25,11 +25,12 @@ public class RegisterVerificationToken {
     private User user;
 
     @Column(nullable = false)
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime expired;
 
 
-    public RegisterVerificationToken() {}
+    public RegisterVerificationToken() {
+    }
 
     public RegisterVerificationToken(String token, User user) {
         this.token = token;

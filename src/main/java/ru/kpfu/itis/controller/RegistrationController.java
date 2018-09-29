@@ -42,10 +42,8 @@ public class RegistrationController {
     private EmailVerifierService emailVerifierService;
 
 
-
-
     @RequestMapping(method = RequestMethod.GET)
-    public String showSignup( ModelMap model, Principal principal ) {
+    public String showSignup(ModelMap model, Principal principal) {
 
         logger.error("[/user/signup/ request]");
 
@@ -69,7 +67,7 @@ public class RegistrationController {
 
         logger.error("[/confirm/next request]");
 
-        model.addAttribute("message","Confirm your account, now=)");
+        model.addAttribute("message", "Confirm your account, now=)");
 
         return "security/afterRegistration";
     }
@@ -77,9 +75,9 @@ public class RegistrationController {
 
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     public String confirmRegistration(
-        @RequestParam(value = "token") String token,
-        RedirectAttributes redirectAttributes,
-        ModelMap model
+            @RequestParam(value = "token") String token,
+            RedirectAttributes redirectAttributes,
+            ModelMap model
     ) {
         logger.error("[/confirm request]");
 
@@ -97,7 +95,7 @@ public class RegistrationController {
         User user = verificationToken.getUser();
 
         //if verification token has expired
-        if ( verificationToken.getExpired().isBefore( new LocalDateTime() )) {
+        if (verificationToken.getExpired().isBefore(new LocalDateTime())) {
 
             logger.error("Verification token [" + verificationToken.getToken() + "] was expired");
 
@@ -111,7 +109,7 @@ public class RegistrationController {
 
         userService.updateUser(user);
 
-        redirectAttributes.addFlashAttribute("message","You are successfully activate your account\n " +
+        redirectAttributes.addFlashAttribute("message", "You are successfully activate your account\n " +
                 "now enter your email and password. Good luck=)");
 
         return "redirect:/login";
@@ -120,9 +118,9 @@ public class RegistrationController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String registerAccount(
-        @ModelAttribute("user") @Valid UserFrom user,
-        BindingResult result,
-        WebRequest request
+            @ModelAttribute("user") @Valid UserFrom user,
+            BindingResult result,
+            WebRequest request
     ) {
 
         if (result.hasErrors()) {
@@ -157,7 +155,7 @@ public class RegistrationController {
 
         logger.error("[Verifying user's email `" + emailAddress + "`]");
 
-        if ( !emailVerifierService.check(emailAddress) ) {
+        if (!emailVerifierService.check(emailAddress)) {
 
             throw new UserRegistrationException("Email is not valid!");
         }
@@ -173,7 +171,6 @@ public class RegistrationController {
 
         modelAndView.setViewName("security/signup");
 
-        //to make available registering user/ user form binding
         modelAndView.addObject("user", new UserFrom());
 
         if (ex instanceof InternetAddressException || ex instanceof UserRegistrationException) {
